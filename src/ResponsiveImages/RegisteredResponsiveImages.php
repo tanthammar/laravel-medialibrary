@@ -2,6 +2,7 @@
 
 namespace Spatie\MediaLibrary\ResponsiveImages;
 
+use DateTimeInterface;
 use Illuminate\Support\Collection;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -28,6 +29,32 @@ class RegisteredResponsiveImages
             ->map(fn (ResponsiveImage $responsiveImage) => $responsiveImage->url())
             ->values()
             ->toArray();
+    }
+
+    public function getTemporaryUrls(DateTimeInterface $expiration, array $options = []): array
+    {
+        return $this->files
+            ->map(fn (ResponsiveImage $responsiveImage) => (
+                $responsiveImage->temporaryUrl($expiration, $options)
+            ))
+            ->values()
+            ->toArray();
+    }
+
+    public function getSrcsetTemporaryUrls(DateTimeInterface $expiration): string
+    {
+        $filesSrcset = $this->files
+            ->map(fn (ResponsiveImage $responsiveImage) => "{$responsiveImage->temporaryUrl($expiration)} {$responsiveImage->width()}w")
+            ->implode(', ');
+
+        $shouldAddPlaceholderSvg = config('media-library.responsive_images.use_tiny_placeholders')
+            && $this->getPlaceholderSvg();
+
+        if ($shouldAddPlaceholderSvg) {
+            $filesSrcset .= ', '.$this->getPlaceholderSvg().' 32w';
+        }
+
+        return $filesSrcset;
     }
 
     public function getFilenames(): array
