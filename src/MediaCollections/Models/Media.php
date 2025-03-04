@@ -385,6 +385,11 @@ class Media extends Model implements Attachable, Htmlable, Responsable
         return $this->responsiveImages($conversionName)->getSrcset();
     }
 
+    public function getSrcsetTemporaryUrls(DateTimeInterface $expiration, string $conversionName = ''): string
+    {
+        return $this->responsiveImages($conversionName)->getSrcsetTemporaryUrls($expiration);
+    }
+
     protected function previewUrl(): Attribute
     {
         return Attribute::get(

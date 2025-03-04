@@ -1,1 +1,1 @@
-<img{!! $attributeString !!}@if($loadingAttributeValue) loading="{{ $loadingAttributeValue }}"@endif src="{{ $media->getUrl($conversion) }}" alt="{{ $media->name }}">
+<img{!! $attributeString !!}@if($loadingAttributeValue) loading="{{ $loadingAttributeValue }}"@endif src="{{ $media->getTemporaryUrl(now()->addHour(), $conversion) }}" alt="{{ $media->name }}">
